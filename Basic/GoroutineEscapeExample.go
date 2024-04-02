@@ -7,19 +7,6 @@ import (
 	"time"
 )
 
-//func worker() {
-//	resp, err := http.Get("https://go.dev/")
-//	if err != nil {
-//		fmt.Println("Error:", err)
-//		return
-//	}
-//	_, _ = io.ReadAll(resp.Body)
-//	//err = resp.Body.Close()
-//	//if err != nil {
-//	//	fmt.Println("Error closing body:", err)
-//	//}
-//}
-
 func wgWorker(wg *sync.WaitGroup) {
 	defer wg.Done()
 	// Do some work...
@@ -47,13 +34,6 @@ func chWorker(ch chan int) {
 }
 
 func main() {
-	// 场景1：未关闭resp.Body.Close() ???
-	//for index := 0; index < 5; index++ {
-	//	go worker()
-	//}
-	//time.Sleep(1000 * time.Millisecond)
-	//fmt.Printf("场景1:goroutine数量 %d\n", runtime.NumGoroutine())
-
 	// 场景2：忘记调用wg.Wait()
 	var wg2 sync.WaitGroup
 	for i := 0; i < 10; i++ {
