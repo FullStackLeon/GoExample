@@ -19,6 +19,7 @@ func main() {
 	if err != nil {
 		log.Fatal("Ganache client dial failed", err)
 	}
+	// test private key
 	privateKey := "ea1f4a1007ec5468753aebf79da8b3aa342968e0279860d02eb1382b734279e4"
 	priKey, err := crypto.HexToECDSA(privateKey)
 	if err != nil {
