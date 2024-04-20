@@ -22,7 +22,7 @@ func main() {
 	gVar++
 	lVar++
 	returnFunc()
-	panicFunc()
+	deferPanicFunc()
 	// 输出结果：
 	//defer in return example,gVar:101
 	//defer in panic example,gVar:102
@@ -37,7 +37,7 @@ func returnFunc() {
 	return
 }
 
-func panicFunc() {
+func deferPanicFunc() {
 	defer fmt.Printf("defer in panic example,gVar:%v\n", gVar)
 	gVar++
 	panic("panic for test")
