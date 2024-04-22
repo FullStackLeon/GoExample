@@ -19,27 +19,27 @@ func main() {
 	//	}
 	//}()
 
-	callPanicFunc()
+	CallPanicFunc()
 
 	select {}
 }
 
-func panicFunc() {
+func PanicFunc() {
 	// 可以捕获panicFunc中的Panic
 	defer func() {
 		if err := recover(); err != nil {
-			fmt.Println("panicFunc recover err", err)
+			fmt.Println("PanicFunc recover err", err)
 		}
 	}()
-	panic("panicFunc for test")
+	panic("PanicFunc for test")
 }
 
-func callPanicFunc() {
+func CallPanicFunc() {
 	// 无法捕获panicFunc中的Panic
 	//defer func() {
 	//	if err := recover(); err != nil {
 	//		fmt.Println("callPanicFunc recover err", err)
 	//	}
 	//}()
-	go panicFunc()
+	go PanicFunc()
 }

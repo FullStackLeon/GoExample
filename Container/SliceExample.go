@@ -63,4 +63,14 @@ func main() {
 	s10 := []int{4, 5, 6}
 	s11 := append(s9, s10...)
 	fmt.Println(s11)
+
+	// 切片扩容策略:
+	s12 := make([]int, 1024)
+	fmt.Println(cap(s12)) // cap:1024
+	s12 = append(s12, 1)
+	fmt.Println(cap(s12)) // cap:1536
+	s12 = append(s12, s12...)
+	fmt.Println(cap(s12)) // cap:2304
+	s12 = append(s12, s12...)
+	fmt.Println(cap(s12)) // cap:6144
 }

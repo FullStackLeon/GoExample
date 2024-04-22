@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-var gVar = 100
+var GVar = 100
 
 func main() {
 	defer func() {
@@ -14,31 +14,31 @@ func main() {
 	}()
 	lVar := 200
 	defer func(v int) {
-		fmt.Printf("defer in main function,gVar:%v,v:%v\n", gVar, v)
+		fmt.Printf("defer in main function,GVar:%v,v:%v\n", GVar, v)
 	}(lVar)
 	defer func() {
-		fmt.Printf("defer in main function,gVar:%v,lVar:%v\n", gVar, lVar)
+		fmt.Printf("defer in main function,GVar:%v,lVar:%v\n", GVar, lVar)
 	}()
-	gVar++
+	GVar++
 	lVar++
-	returnFunc()
-	deferPanicFunc()
+	ReturnFunc()
+	DeferPanicFunc()
 	// 输出结果：
-	//defer in return example,gVar:101
-	//defer in panic example,gVar:102
-	//defer in main function,gVar:103,lVar:201
-	//defer in main function,gVar:103,v:200
+	//defer in return example,GVar:101
+	//defer in panic example,GVar:102
+	//defer in main function,GVar:103,lVar:201
+	//defer in main function,GVar:103,v:200
 	//Panic err panic for test
 }
 
-func returnFunc() {
-	defer fmt.Printf("defer in return example,gVar:%v\n", gVar)
-	gVar++
+func ReturnFunc() {
+	defer fmt.Printf("defer in return example,GVar:%v\n", GVar)
+	GVar++
 	return
 }
 
-func deferPanicFunc() {
-	defer fmt.Printf("defer in panic example,gVar:%v\n", gVar)
-	gVar++
+func DeferPanicFunc() {
+	defer fmt.Printf("defer in panic example,GVar:%v\n", GVar)
+	GVar++
 	panic("panic for test")
 }
