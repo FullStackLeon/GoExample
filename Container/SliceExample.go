@@ -73,4 +73,14 @@ func main() {
 	fmt.Println(cap(s12)) // cap:2304
 	s12 = append(s12, s12...)
 	fmt.Println(cap(s12)) // cap:6144
+
+	// Slice copy方法示例
+	s := "Hello copy function"
+	s13 := make([]byte, len(s))
+	copy(s13, s)
+	fmt.Println(string(s13))
+
+	s14 := make([]byte, len(s13))
+	copy(s14, s13)
+	fmt.Println(string(s14))
 }
