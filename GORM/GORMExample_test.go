@@ -35,7 +35,7 @@ func TestUserListWithGen(t *testing.T) {
 	ctx := context.Background()
 	query := dal.Use(db).User
 
-	users, err := query.WithContext(ctx).Select(query.UserID, query.Username).Find()
+	users, err := query.WithContext(ctx).Select(query.ID, query.Username).Find()
 	if err != nil {
 		log.Error().Err(err).Stack()
 		return
@@ -55,5 +55,42 @@ func TestUserList(t *testing.T) {
 
 	for _, user := range users {
 		fmt.Println(user)
+	}
+}
+
+func TestUserAndDepListWithHasMany(t *testing.T) {
+	ctx := context.Background()
+	query := dal.Use(db).User
+	list, err := query.WithContext(ctx).Find()
+	if err != nil {
+		log.Error().Err(err).Stack()
+		return
+	}
+	for i := range list {
+		fmt.Printf("%#v\n", list[i])
+	}
+}
+
+func TestUserAndDepListWithMany2Many(t *testing.T) {
+	// 方式1：gorm gen接口
+	//ctx := context.Background()
+	//query := dal.Use(db).User
+	//list, err := query.WithContext(ctx).Find()
+	//if err != nil {
+	//	log.Error().Err(err).Stack()
+	//	return
+	//}
+	//for i := range list {
+	//	fmt.Printf("%#v\n", list[i])
+	//}
+	// 方式2：gorm原生
+	var users []model.User
+	err := db.Model(&model.User{}).Preload("Deps").Find(&users).Error
+	if err != nil {
+		log.Error().Err(err).Stack()
+		return
+	}
+	for _, user := range users {
+		fmt.Printf("%#v\n", user)
 	}
 }

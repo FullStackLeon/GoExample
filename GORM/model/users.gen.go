@@ -14,7 +14,7 @@ const TableNameUser = "users"
 
 // User mapped from table <users>
 type User struct {
-	UserID           int32          `gorm:"column:user_id;primaryKey;autoIncrement:true;comment:用户ID，自增主键" json:"user_id"`                                                              // 用户ID，自增主键
+	ID               int32          `gorm:"column:id;primaryKey;autoIncrement:true;comment:用户ID，自增主键" json:"id"`                                                                        // 用户ID，自增主键
 	Username         string         `gorm:"column:username;not null;comment:用户名，不能为空" json:"username"`                                                                                  // 用户名，不能为空
 	Email            string         `gorm:"column:email;comment:电子邮箱地址，唯一索引" json:"email"`                                                                                              // 电子邮箱地址，唯一索引
 	Password         string         `gorm:"column:password;not null;comment:加密后的密码，长度一般为哈希后的结果，不能为空" json:"password"`                                                                   // 加密后的密码，长度一般为哈希后的结果，不能为空
@@ -33,7 +33,7 @@ type User struct {
 	CreatedAt        time.Time      `gorm:"column:created_at;default:CURRENT_TIMESTAMP;comment:记录创建时间，默认为当前时间" json:"created_at"`                                                       // 记录创建时间，默认为当前时间
 	UpdatedAt        time.Time      `gorm:"column:updated_at;default:CURRENT_TIMESTAMP;comment:记录更新时间，默认为当前时间，自动更新" json:"updated_at"`                                                  // 记录更新时间，默认为当前时间，自动更新
 	DeletedAt        gorm.DeletedAt `gorm:"column:deleted_at;comment:记录删除时间，用于软删除，为空表示未删除" json:"deleted_at"`                                                                           // 记录删除时间，用于软删除，为空表示未删除
-	org_id           *Dep           `gorm:"foreignKey:org_id;references:id" json:"org_id"`
+	Deps             []Dep          `gorm:"foreignKey:user_id;joinForeignKey:user_id;joinReferences:id;many2many:user_dep_relations;references:id" json:"deps"`
 }
 
 // TableName User's table name

@@ -27,7 +27,7 @@ func newUser(db *gorm.DB, opts ...gen.DOOption) user {
 
 	tableName := _user.userDo.TableName()
 	_user.ALL = field.NewAsterisk(tableName)
-	_user.UserID = field.NewInt32(tableName, "user_id")
+	_user.ID = field.NewInt32(tableName, "id")
 	_user.Username = field.NewString(tableName, "username")
 	_user.Email = field.NewString(tableName, "email")
 	_user.Password = field.NewString(tableName, "password")
@@ -46,10 +46,10 @@ func newUser(db *gorm.DB, opts ...gen.DOOption) user {
 	_user.CreatedAt = field.NewTime(tableName, "created_at")
 	_user.UpdatedAt = field.NewTime(tableName, "updated_at")
 	_user.DeletedAt = field.NewField(tableName, "deleted_at")
-	_user.org_id = userHasOneorg_id{
+	_user.Deps = userManyToManyDeps{
 		db: db.Session(&gorm.Session{}),
 
-		RelationField: field.NewRelation("org_id", "model.Dep"),
+		RelationField: field.NewRelation("Deps", "model.Dep"),
 	}
 
 	_user.fillFieldMap()
@@ -61,7 +61,7 @@ type user struct {
 	userDo userDo
 
 	ALL              field.Asterisk
-	UserID           field.Int32   // 用户ID，自增主键
+	ID               field.Int32   // 用户ID，自增主键
 	Username         field.String  // 用户名，不能为空
 	Email            field.String  // 电子邮箱地址，唯一索引
 	Password         field.String  // 加密后的密码，长度一般为哈希后的结果，不能为空
@@ -80,7 +80,7 @@ type user struct {
 	CreatedAt        field.Time    // 记录创建时间，默认为当前时间
 	UpdatedAt        field.Time    // 记录更新时间，默认为当前时间，自动更新
 	DeletedAt        field.Field   // 记录删除时间，用于软删除，为空表示未删除
-	org_id           userHasOneorg_id
+	Deps             userManyToManyDeps
 
 	fieldMap map[string]field.Expr
 }
@@ -97,7 +97,7 @@ func (u user) As(alias string) *user {
 
 func (u *user) updateTableName(table string) *user {
 	u.ALL = field.NewAsterisk(table)
-	u.UserID = field.NewInt32(table, "user_id")
+	u.ID = field.NewInt32(table, "id")
 	u.Username = field.NewString(table, "username")
 	u.Email = field.NewString(table, "email")
 	u.Password = field.NewString(table, "password")
@@ -141,7 +141,7 @@ func (u *user) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 
 func (u *user) fillFieldMap() {
 	u.fieldMap = make(map[string]field.Expr, 20)
-	u.fieldMap["user_id"] = u.UserID
+	u.fieldMap["id"] = u.ID
 	u.fieldMap["username"] = u.Username
 	u.fieldMap["email"] = u.Email
 	u.fieldMap["password"] = u.Password
@@ -173,13 +173,13 @@ func (u user) replaceDB(db *gorm.DB) user {
 	return u
 }
 
-type userHasOneorg_id struct {
+type userManyToManyDeps struct {
 	db *gorm.DB
 
 	field.RelationField
 }
 
-func (a userHasOneorg_id) Where(conds ...field.Expr) *userHasOneorg_id {
+func (a userManyToManyDeps) Where(conds ...field.Expr) *userManyToManyDeps {
 	if len(conds) == 0 {
 		return &a
 	}
@@ -192,27 +192,27 @@ func (a userHasOneorg_id) Where(conds ...field.Expr) *userHasOneorg_id {
 	return &a
 }
 
-func (a userHasOneorg_id) WithContext(ctx context.Context) *userHasOneorg_id {
+func (a userManyToManyDeps) WithContext(ctx context.Context) *userManyToManyDeps {
 	a.db = a.db.WithContext(ctx)
 	return &a
 }
 
-func (a userHasOneorg_id) Session(session *gorm.Session) *userHasOneorg_id {
+func (a userManyToManyDeps) Session(session *gorm.Session) *userManyToManyDeps {
 	a.db = a.db.Session(session)
 	return &a
 }
 
-func (a userHasOneorg_id) Model(m *model.User) *userHasOneorg_idTx {
-	return &userHasOneorg_idTx{a.db.Model(m).Association(a.Name())}
+func (a userManyToManyDeps) Model(m *model.User) *userManyToManyDepsTx {
+	return &userManyToManyDepsTx{a.db.Model(m).Association(a.Name())}
 }
 
-type userHasOneorg_idTx struct{ tx *gorm.Association }
+type userManyToManyDepsTx struct{ tx *gorm.Association }
 
-func (a userHasOneorg_idTx) Find() (result *model.Dep, err error) {
+func (a userManyToManyDepsTx) Find() (result []*model.Dep, err error) {
 	return result, a.tx.Find(&result)
 }
 
-func (a userHasOneorg_idTx) Append(values ...*model.Dep) (err error) {
+func (a userManyToManyDepsTx) Append(values ...*model.Dep) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -220,7 +220,7 @@ func (a userHasOneorg_idTx) Append(values ...*model.Dep) (err error) {
 	return a.tx.Append(targetValues...)
 }
 
-func (a userHasOneorg_idTx) Replace(values ...*model.Dep) (err error) {
+func (a userManyToManyDepsTx) Replace(values ...*model.Dep) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -228,7 +228,7 @@ func (a userHasOneorg_idTx) Replace(values ...*model.Dep) (err error) {
 	return a.tx.Replace(targetValues...)
 }
 
-func (a userHasOneorg_idTx) Delete(values ...*model.Dep) (err error) {
+func (a userManyToManyDepsTx) Delete(values ...*model.Dep) (err error) {
 	targetValues := make([]interface{}, len(values))
 	for i, v := range values {
 		targetValues[i] = v
@@ -236,11 +236,11 @@ func (a userHasOneorg_idTx) Delete(values ...*model.Dep) (err error) {
 	return a.tx.Delete(targetValues...)
 }
 
-func (a userHasOneorg_idTx) Clear() error {
+func (a userManyToManyDepsTx) Clear() error {
 	return a.tx.Clear()
 }
 
-func (a userHasOneorg_idTx) Count() int64 {
+func (a userManyToManyDepsTx) Count() int64 {
 	return a.tx.Count()
 }
 
