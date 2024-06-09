@@ -46,6 +46,11 @@ func newUser(db *gorm.DB, opts ...gen.DOOption) user {
 	_user.CreatedAt = field.NewTime(tableName, "created_at")
 	_user.UpdatedAt = field.NewTime(tableName, "updated_at")
 	_user.DeletedAt = field.NewField(tableName, "deleted_at")
+	_user.org_id = userHasOneorg_id{
+		db: db.Session(&gorm.Session{}),
+
+		RelationField: field.NewRelation("org_id", "model.Dep"),
+	}
 
 	_user.fillFieldMap()
 
@@ -75,6 +80,7 @@ type user struct {
 	CreatedAt        field.Time    // 记录创建时间，默认为当前时间
 	UpdatedAt        field.Time    // 记录更新时间，默认为当前时间，自动更新
 	DeletedAt        field.Field   // 记录删除时间，用于软删除，为空表示未删除
+	org_id           userHasOneorg_id
 
 	fieldMap map[string]field.Expr
 }
@@ -134,7 +140,7 @@ func (u *user) GetFieldByName(fieldName string) (field.OrderExpr, bool) {
 }
 
 func (u *user) fillFieldMap() {
-	u.fieldMap = make(map[string]field.Expr, 19)
+	u.fieldMap = make(map[string]field.Expr, 20)
 	u.fieldMap["user_id"] = u.UserID
 	u.fieldMap["username"] = u.Username
 	u.fieldMap["email"] = u.Email
@@ -154,6 +160,7 @@ func (u *user) fillFieldMap() {
 	u.fieldMap["created_at"] = u.CreatedAt
 	u.fieldMap["updated_at"] = u.UpdatedAt
 	u.fieldMap["deleted_at"] = u.DeletedAt
+
 }
 
 func (u user) clone(db *gorm.DB) user {
@@ -164,6 +171,77 @@ func (u user) clone(db *gorm.DB) user {
 func (u user) replaceDB(db *gorm.DB) user {
 	u.userDo.ReplaceDB(db)
 	return u
+}
+
+type userHasOneorg_id struct {
+	db *gorm.DB
+
+	field.RelationField
+}
+
+func (a userHasOneorg_id) Where(conds ...field.Expr) *userHasOneorg_id {
+	if len(conds) == 0 {
+		return &a
+	}
+
+	exprs := make([]clause.Expression, 0, len(conds))
+	for _, cond := range conds {
+		exprs = append(exprs, cond.BeCond().(clause.Expression))
+	}
+	a.db = a.db.Clauses(clause.Where{Exprs: exprs})
+	return &a
+}
+
+func (a userHasOneorg_id) WithContext(ctx context.Context) *userHasOneorg_id {
+	a.db = a.db.WithContext(ctx)
+	return &a
+}
+
+func (a userHasOneorg_id) Session(session *gorm.Session) *userHasOneorg_id {
+	a.db = a.db.Session(session)
+	return &a
+}
+
+func (a userHasOneorg_id) Model(m *model.User) *userHasOneorg_idTx {
+	return &userHasOneorg_idTx{a.db.Model(m).Association(a.Name())}
+}
+
+type userHasOneorg_idTx struct{ tx *gorm.Association }
+
+func (a userHasOneorg_idTx) Find() (result *model.Dep, err error) {
+	return result, a.tx.Find(&result)
+}
+
+func (a userHasOneorg_idTx) Append(values ...*model.Dep) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Append(targetValues...)
+}
+
+func (a userHasOneorg_idTx) Replace(values ...*model.Dep) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Replace(targetValues...)
+}
+
+func (a userHasOneorg_idTx) Delete(values ...*model.Dep) (err error) {
+	targetValues := make([]interface{}, len(values))
+	for i, v := range values {
+		targetValues[i] = v
+	}
+	return a.tx.Delete(targetValues...)
+}
+
+func (a userHasOneorg_idTx) Clear() error {
+	return a.tx.Clear()
+}
+
+func (a userHasOneorg_idTx) Count() int64 {
+	return a.tx.Count()
 }
 
 type userDo struct{ gen.DO }

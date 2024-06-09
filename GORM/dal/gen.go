@@ -15,9 +15,22 @@ import (
 	"gorm.io/plugin/dbresolver"
 )
 
+var (
+	Q    = new(Query)
+	Dep  *dep
+	User *user
+)
+
+func SetDefault(db *gorm.DB, opts ...gen.DOOption) {
+	*Q = *Use(db, opts...)
+	Dep = &Q.Dep
+	User = &Q.User
+}
+
 func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
 		db:   db,
+		Dep:  newDep(db, opts...),
 		User: newUser(db, opts...),
 	}
 }
@@ -25,6 +38,7 @@ func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 type Query struct {
 	db *gorm.DB
 
+	Dep  dep
 	User user
 }
 
@@ -33,6 +47,7 @@ func (q *Query) Available() bool { return q.db != nil }
 func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
 		db:   db,
+		Dep:  q.Dep.clone(db),
 		User: q.User.clone(db),
 	}
 }
@@ -48,16 +63,19 @@ func (q *Query) WriteDB() *Query {
 func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
 		db:   db,
+		Dep:  q.Dep.replaceDB(db),
 		User: q.User.replaceDB(db),
 	}
 }
 
 type queryCtx struct {
+	Dep  *depDo
 	User *userDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
+		Dep:  q.Dep.WithContext(ctx),
 		User: q.User.WithContext(ctx),
 	}
 }

@@ -33,6 +33,7 @@ type User struct {
 	CreatedAt        time.Time      `gorm:"column:created_at;default:CURRENT_TIMESTAMP;comment:记录创建时间，默认为当前时间" json:"created_at"`                                                       // 记录创建时间，默认为当前时间
 	UpdatedAt        time.Time      `gorm:"column:updated_at;default:CURRENT_TIMESTAMP;comment:记录更新时间，默认为当前时间，自动更新" json:"updated_at"`                                                  // 记录更新时间，默认为当前时间，自动更新
 	DeletedAt        gorm.DeletedAt `gorm:"column:deleted_at;comment:记录删除时间，用于软删除，为空表示未删除" json:"deleted_at"`                                                                           // 记录删除时间，用于软删除，为空表示未删除
+	org_id           *Dep           `gorm:"foreignKey:org_id;references:id" json:"org_id"`
 }
 
 // TableName User's table name
