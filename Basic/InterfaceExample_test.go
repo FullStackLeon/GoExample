@@ -1,6 +1,9 @@
-package main
+package Basic
 
-import "fmt"
+import (
+	"fmt"
+	"testing"
+)
 
 type IPeople interface {
 	Talk()
@@ -22,7 +25,7 @@ func NewStructWoman() *Woman {
 	return women
 }
 
-func main() {
+func TestInterface(t *testing.T) {
 	p1 := NewInterfacePeople()
 	if people, ok := p1.(*Woman); ok {
 		if people != nil {

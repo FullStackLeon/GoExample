@@ -1,8 +1,11 @@
-package main
+package Basic
 
-import "fmt"
+import (
+	"fmt"
+	"testing"
+)
 
-func main() {
+func TestPanic(t *testing.T) {
 	// 无法捕获panicFunc中的Panic
 	//go func() {
 	//	defer func() {

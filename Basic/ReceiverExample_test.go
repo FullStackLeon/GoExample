@@ -1,6 +1,9 @@
-package main
+package Basic
 
-import "fmt"
+import (
+	"fmt"
+	"testing"
+)
 
 type Animal struct {
 	Name string
@@ -16,7 +19,7 @@ func (a *Animal) ChangeNamePointer(newName string) {
 	a.Name = newName
 }
 
-func main() {
+func TestReceiver(t *testing.T) {
 	a := Animal{Name: "Cat"}
 
 	a.ChangeNameValue("Dog")

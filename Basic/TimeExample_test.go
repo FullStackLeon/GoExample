@@ -1,12 +1,13 @@
-package main
+package Basic
 
 import (
 	"fmt"
 	"runtime"
+	"testing"
 	"time"
 )
 
-func main() {
+func TestTime(t *testing.T) {
 	ch1 := make(chan string)
 	ch2 := make(chan string)
 	go func() {

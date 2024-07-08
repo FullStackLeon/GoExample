@@ -1,12 +1,13 @@
-package main
+package Basic
 
 import (
 	"fmt"
+	"testing"
 )
 
 var GVar = 100
 
-func main() {
+func TestDefer(t *testing.T) {
 	defer func() {
 		if err := recover(); err != nil {
 			fmt.Println("Panic err", err)
@@ -23,12 +24,6 @@ func main() {
 	lVar++
 	ReturnFunc()
 	DeferPanicFunc()
-	// 输出结果：
-	//defer in return example,GVar:101
-	//defer in panic example,GVar:102
-	//defer in main function,GVar:103,lVar:201
-	//defer in main function,GVar:103,v:200
-	//Panic err panic for test
 }
 
 func ReturnFunc() {

@@ -1,11 +1,12 @@
-package main
+package Basic
 
 import (
 	"fmt"
+	"testing"
 	"time"
 )
 
-func main() {
+func TestTicker(t *testing.T) {
 	// NewTicker 示例
 	ticker := time.NewTicker(100 * time.Millisecond)
 	go func() {

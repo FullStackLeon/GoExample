@@ -1,6 +1,9 @@
-package main
+package Basic
 
-import "fmt"
+import (
+	"fmt"
+	"testing"
+)
 
 type Config struct {
 	Name string
@@ -8,7 +11,7 @@ type Config struct {
 	In   interface{}
 }
 
-func main() {
+func TestStruct(t *testing.T) {
 	hello := interface{}("hello")
 	fmt.Println(hello)
 

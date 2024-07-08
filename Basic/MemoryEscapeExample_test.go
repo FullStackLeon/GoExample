@@ -1,12 +1,13 @@
-package main
+package Basic
 
-// 逃逸分析：go build -gcflags="-m" Basic/MemoryEscapeExample.go
+// 逃逸分析：go build -gcflags="-m" Basic/MemoryEscapeExample_test.go
 //-m 参数在逃逸分析中还有其他取值，主要用于调试和优化。常见取值包括：
 //-m=0：关闭逃逸分析，不进行逃逸分析，也不输出逃逸分析的信息。
 //-m=1：开启逃逸分析，并输出详细的逃逸分析信息。
 //-m=2：开启逃逸分析，但只输出逃逸分析的结果，不显示详细信息。
 import (
 	"fmt"
+	"testing"
 )
 
 var globalVar *int
@@ -43,7 +44,7 @@ func closure() func() {
 		fmt.Println(x) // 局部变量x 逃逸到堆上
 	}
 }
-func main() {
+func TestMemoryEscape(t *testing.T) {
 	// 场景1：局部变量指针或引用类型返回到函数外部
 	p := NewPerson("Jack", 18)
 	fmt.Println(p)
