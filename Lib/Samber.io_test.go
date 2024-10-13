@@ -1,12 +1,13 @@
-package main
+package Lib
 
 import (
 	"fmt"
+	"testing"
 
 	"github.com/samber/lo"
 )
 
-func main() {
+func TestSamber(t *testing.T) {
 	filtered := lo.Filter([]int{1, 2, 3, 4, 5}, func(item, index int) bool { return item%2 == 0 })
 	fmt.Println(filtered) // [2, 4]
 

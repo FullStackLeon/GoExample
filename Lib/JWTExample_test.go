@@ -1,9 +1,10 @@
-package main
+package Lib
 
 import (
 	"fmt"
 	"log"
 	"os"
+	"testing"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -74,7 +75,7 @@ func VerifyToken(tokenString string) (*jwt.Token, error) {
 	return token, nil
 }
 
-func main() {
+func TestJWT(t *testing.T) {
 	// 创建一个新的用户信息
 	user := &User{
 		Username: "username",
