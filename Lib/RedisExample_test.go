@@ -3,12 +3,13 @@ package Lib
 import (
 	"fmt"
 	"log"
+	"testing"
 	"time"
 
 	"github.com/go-redis/redis"
 )
 
-func main() {
+func TestRedis(t *testing.T) {
 	client := redis.NewClient(&redis.Options{
 		Addr:     "127.0.0.1:6379",
 		Password: "",
