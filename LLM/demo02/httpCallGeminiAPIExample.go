@@ -18,21 +18,23 @@ func main() {
 		return
 	}
 
-	// 设置代理
-	proxyUrl, err := url.Parse("http://127.0.0.1:10808")
-	if err != nil {
-		fmt.Printf("解析代理地址失败: %v\n", err)
-		return
+	var client *http.Client
+	// 检测代理和设置代理
+	if os.Getenv("USER_PROXY") != "" {
+		proxyUrl, err := url.Parse("http://127.0.0.1:10808")
+		if err != nil {
+			fmt.Printf("解析代理地址失败: %v\n", err)
+			return
+		}
+		transport := &http.Transport{
+			Proxy: http.ProxyURL(proxyUrl),
+		}
+		client = &http.Client{
+			Transport: transport,
+		}
+	} else {
+		client = &http.Client{}
 	}
-	transport := &http.Transport{
-		Proxy: http.ProxyURL(proxyUrl),
-	}
-
-	// 创建 HTTP 客户端
-	client := &http.Client{
-		Transport: transport,
-	}
-
 	// 设置请求 URL 和请求体
 	geminiUrl := "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey
 	reqBody := `{

@@ -3,8 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
-	"google.golang.org/genai"
 	"os"
+
+	"google.golang.org/genai"
 )
 
 func main() {
@@ -26,5 +27,9 @@ func main() {
 		nil,
 	)
 
-	fmt.Println(result)
+	if result != nil {
+		fmt.Println(result.Text())
+	} else {
+		fmt.Println("No result")
+	}
 }
