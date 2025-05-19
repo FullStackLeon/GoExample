@@ -8,10 +8,14 @@ import (
 )
 
 func main() {
-
 	ctx := context.Background()
+	apiKey := os.Getenv("GEMINI_API_KEY")
+	if apiKey == "" {
+		fmt.Println("GEMINI_API_KEY environment variable not set")
+		return
+	}
 	client, _ := genai.NewClient(ctx, &genai.ClientConfig{
-		APIKey:  os.Getenv("GEMINI_API_KEY"),
+		APIKey:  apiKey,
 		Backend: genai.BackendGeminiAPI,
 	})
 

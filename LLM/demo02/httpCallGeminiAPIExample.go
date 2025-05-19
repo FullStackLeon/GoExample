@@ -34,12 +34,12 @@ func main() {
 	}
 
 	// 设置请求 URL 和请求体
-	geminiUrl := "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
+	geminiUrl := "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=" + apiKey
 	reqBody := `{
-		"prompt": {
-			"text": "Explain how AI works in a few words"
-		}
-	}`
+	"contents": [{
+    	"parts":[{"text": "Explain how AI works"}]
+    }]
+   }`
 
 	// 创建 POST 请求
 	req, err := http.NewRequestWithContext(ctx, "POST", geminiUrl, strings.NewReader(reqBody))
@@ -50,7 +50,6 @@ func main() {
 
 	// 设置请求头
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Authorization", "Bearer "+apiKey)
 
 	// 发送请求
 	resp, err := client.Do(req)
