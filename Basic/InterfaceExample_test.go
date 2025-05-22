@@ -1,6 +1,8 @@
 package Basic
 
 import (
+	"GoLib/Basic/player"
+	"GoLib/Basic/weapon"
 	"fmt"
 	"testing"
 )
@@ -44,4 +46,16 @@ func TestInterface(t *testing.T) {
 	} else {
 		fmt.Println("p2 is nil")
 	}
+}
+
+func TestPlayer(t *testing.T) {
+	pl := player.Player{
+		Health: 100,
+	}
+	wpn := weapon.Weapon{
+		Damage: 10,
+	}
+
+	wpn.Attack(&pl)
+	fmt.Println(pl.Health)
 }
