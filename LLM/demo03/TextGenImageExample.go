@@ -3,12 +3,14 @@ package main
 import (
 	"context"
 	"fmt"
-	"google.golang.org/genai"
 	"os"
+
+	"google.golang.org/genai"
 )
 
 func main() {
 	ctx := context.Background()
+	// genai Client 初始化
 	client, err := genai.NewClient(ctx, &genai.ClientConfig{
 		APIKey:  os.Getenv("GEMINI_API_KEY"),
 		Backend: genai.BackendGeminiAPI})
@@ -18,6 +20,7 @@ func main() {
 		return
 	}
 
+	// 调用模型 文生文 和 文生图
 	result, err := client.Models.GenerateContent(ctx,
 		"gemini-2.0-flash-preview-image-generation",
 		genai.Text("Generate a picture of three matches dancing. The matches look like people"),
