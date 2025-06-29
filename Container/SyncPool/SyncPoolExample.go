@@ -11,6 +11,14 @@ var slicePool = sync.Pool{
 	},
 }
 
+var pool1 = sync.Pool{
+	New: func() any {
+		fmt.Println("new buffer called")
+		b := make([]byte, 0, 32)
+		return &b
+	},
+}
+
 var mapPool = sync.Pool{
 	New: func() interface{} {
 		return make(map[int]int, 100)
@@ -56,4 +64,16 @@ func main() {
 	//m1 value:map[1:1 2:2],m1 length:2
 	//m2 pointer:0xc00007a0c0
 	//m2 value:map[],m2 length:0
+
+	fmt.Println("---------sync pool []byte example----------")
+
+	for i := 0; i < 10; i++ {
+		bufferPtr := pool1.Get().(*[]byte)
+		buffer := *bufferPtr
+		buffer = fmt.Appendf(buffer[:0], "第%d次append", i)
+		// buffer = append(buffer, []byte(fmt.Sprintf("第%d次append", i))...)
+		fmt.Println("buffer:", string(buffer))
+		pool1.Put(bufferPtr)
+
+	}
 }
